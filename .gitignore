@@ -3,4 +3,4 @@ log/*.log
 db/schema.rb
 Gemfile.lock
 tmp/*
-.supervisord-confs/*
+supervisor-confs/*
