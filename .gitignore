@@ -4,3 +4,4 @@ db/schema.rb
 Gemfile.lock
 tmp/*
 supervisor-confs/*
+public/javascripts/cache/*
