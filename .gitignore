@@ -1,2 +1,4 @@
 database.yml
-
+*.log
+db/schema.rb
+Gemfile.lock

@@ -50,3 +50,5 @@ gem 'thor', '= 0.14.6'
 # This needs to be installed so we can run Rails console on OpenShift directly
 gem 'minitest'
 #gem 'test-unit', '= 1.2.3'
+
+gem 'thin', '1.6.2'
