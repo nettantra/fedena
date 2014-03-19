@@ -32,7 +32,8 @@ The Project Fedena website http://www.projectfedena.org/ is the home to the deve
          # Update config/database.yml as per your database settings
          bundle install
          bundle exec rake fedena:plugins:install_all
-         bundle exec script/server
+         # use `bundle exec script/server` or `bundle exec thin start`
+         bundle exec thin start
 
 #Demo
 A demo website for Fedena has been set up at demo.projectfedena.org. You can log in with following usernames and passwords:
