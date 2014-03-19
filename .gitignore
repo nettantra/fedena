@@ -2,3 +2,5 @@ database.yml
 log/*.log
 db/schema.rb
 Gemfile.lock
+tmp/*
+.supervisord-confs/*

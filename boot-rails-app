@@ -1,0 +1,70 @@
+#!/bin/bash
+CPWD=`pwd`
+SDIR=`dirname $0`
+APP_DIR=`cd $SDIR && pwd && cd $CPWD`
+USER_HOME=`cd ~; pwd`
+AVAILABLE_COMMANDS=(start stop restart)
+COMMAND=$1
+PORT=$2
+LOCK_FILE=$APP_DIR/tmp/app-$PORT.lock
+cd $APP_DIR
+read -d '' HELP_TEXT <<"EOF"
+Example Usage:
+  $0 start 3401 | 3401 is the port number
+  $0 stop 3401 | 3401 is the port number
+  $0 restart 3401 | 3401 is the port number
+EOF
+
+if [[ ! ${AVAILABLE_COMMANDS[*]} =~ "$COMMAND" ]]
+then
+  echo "$HELP_TEXT"
+  exit
+fi
+
+if [ -z "$PORT" ]
+then
+  echo "$HELP_TEXT"
+  exit
+fi
+
+function start_railsapp {
+  RAILSA_LOCK_FILE=$1
+  RAILSA_PORT=$2
+  stop_railsapp $RAILSA_LOCK_FILE
+  BOOT_PID=$$
+  echo $BOOT_PID > $RAILSA_LOCK_FILE
+  bundle exec thin -e production -p $RAILSA_PORT  start
+}
+
+function stop_railsapp {
+  RAILSA_LOCK_FILE=$1
+  if [ -f $RAILSA_LOCK_FILE ];
+  then
+    for PID in `cat $RAILSA_LOCK_FILE`
+    do
+      for CPID in `ps h --ppid $PID -o pid`
+      do
+        kill -9 $CPID
+      done;
+      kill -9 $PID
+    done;
+    rm $RAILSA_LOCK_FILE
+  fi
+}
+
+source $USER_HOME/.rvm/environments/ruby-1.8.7-p374
+
+if [ "$COMMAND" ==  "start" ]
+then
+  echo "Starting server ..."
+  start_railsapp $LOCK_FILE $PORT
+elif [ "$COMMAND" ==  "restart" ]
+then
+  echo "Restarting server ..."
+  start_railsapp $LOCK_FILE $PORT
+elif [ "$COMMAND" == "stop" ]
+then
+  echo "Stopping server ..."
+  stop_railsapp $LOCK_FILE $PORT
+fi
+
